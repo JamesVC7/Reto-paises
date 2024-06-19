@@ -1,32 +1,48 @@
 <template>
-    <Card style="width: 25rem; overflow: hidden">
-        <template #header>
-            <img alt="user header" src="https://primefaces.org/cdn/primevue/images/usercard.png" />
-        </template>
-        <template #title>Advanced Card</template>
-        <template #subtitle>Card subtitle</template>
-        <template #content>
-            <p class="m-0">
-                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Inventore sed consequuntur error repudiandae numquam deserunt quisquam repellat libero asperiores earum nam nobis, culpa ratione quam perferendis esse, cupiditate neque
-                quas!
-            </p>
-        </template>
-        <template #footer>
-            <div class="flex gap-3 mt-1">
-                <Button label="Cancel" severity="secondary" outlined class="w-full" />
-                <Button label="Save" class="w-full" />
-            </div>
-        </template>
+    <nuxt-link :to="{ name: 'countries-name', params: { name } }" >
+    <Card >
+        
+      <template #header>
+        <img v-if="image" :src="image.previewURL" />
+        <div v-else>
+          No image found
+        </div>
+      </template>
+      <template #title>{{ name }}</template>
+      <template #subtitle>{{ continent }}</template>
+      
     </Card>
-</template>
-
-<script setup lang="ts">
-
-interface CardCountryProps {
-  title: string;
-  imageSrc: string;
+</nuxt-link>
+  </template>
   
-}
+  <script setup lang="ts">
+  import { ref, onMounted } from 'vue';
+  import { getImages } from '~/api/pixabay-api.js';
+  
+  interface CardCountryProps {
+    continent: string;
+    name: string;
+  }
+  
+  const props = defineProps<CardCountryProps>();
+  
+  interface CountryImage {
+    previewURL: string;
+  }
 
-defineProps<CardCountryProps>();
-</script>
+  const image = ref<CountryImage | null>(null);
+  
+  onMounted(async () => {
+    try {
+      const fetchedImages = await getImages(props.name);
+      if (fetchedImages.length > 0) {
+        image.value = fetchedImages[1]; 
+      }
+    } catch (error) {
+      console.error('Error fetching images:', error);
+    }
+  });
+  </script>
+  
+
+  
