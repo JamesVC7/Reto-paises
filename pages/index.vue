@@ -8,7 +8,7 @@
       </InputIcon>
       <InputText v-model="searchTerm" placeholder="Busca un país" class="w-full shadow-none" />
       <ul v-if="showDropdown" class="absolute z-10 mt-1 bg-white border border-gray-300 w-full rounded-md shadow-lg">
-        <div class="flex flex-row items-center justify-between p-4"><p>Filtrar por continente</p>
+        <div class="flex flex-row flex-wrap items-center justify-between p-4"><p>Filtrar por continente</p>
           <div class="justify-between"><button @click="showDropdown=false" class="hover:text-green-500"><i class="pi pi-check"/>&nbsp;Guardar&nbsp;&nbsp;</button>
             <button @click="uncheckAll" class="hover:text-blue-500"><i class="pi pi-trash"/>&nbsp;Limpiar</button></div></div>
         <li v-for="continent in continents" :key="continent.code">

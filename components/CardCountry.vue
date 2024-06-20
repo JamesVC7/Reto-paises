@@ -3,14 +3,14 @@
         class="w-full m-8 sm:w-5/12 sm:m-4 sm:m-0 lg:w-1/4 lg:m-4 hover:shadow-xl" id="link_card">
         <Card id="card">
             <template #header>
-                <img v-if="image" :src="image.largeImageURL" class="p-4 w-full" id="card-img"/>
+                <img v-if="image" :src="image.webformatURL" class="p-4 w-full" id="card-img"/>
                 <div v-else>
                     Cargando ...
                 </div>
             </template>
             <template #title>
                 <div class="flex flex-row items-center gap-4">
-                    <img class="w-1/5 h-auto" v-if="illustration" :src="illustration.largeImageURL" />
+                    <img class="w-1/5 h-auto" v-if="illustration" :src="illustration.webformatURL" />
                     <div>{{ name }}
                         <p class="font-normal text-base">{{ continent }}</p>
                     </div>
@@ -32,7 +32,7 @@ interface CardCountryProps {
 const props = defineProps<CardCountryProps>();
 
 interface CountryImage {
-    largeImageURL: string;
+    webformatURL: string;
     type: string;
 }
 
