@@ -1,31 +1,20 @@
 <template>
-  <div class="flex justify-center">
-<IconField class="w-3/5 shadow-md">
+<div class="flex justify-center">
+<IconField class="w-6/12 shadow-md">
       <InputIcon>
         <i class="pi pi-search" />
       </InputIcon>
       <InputText v-model="searchTerm" placeholder="Busca un pais" class="w-full shadow-none"/>
     </IconField>
   </div>
-  <div class="p-4 flex ">
-    <div class="flex flex-wrap justify-center" v-if="filteredCountries.length > 0">
-      <CardCountry v-for="country in filteredCountries" :key="country.code" :continent="country.continent.name"
-        :name="country.name"/>
-    </div>
-    <div class="flex flex-wrap justify-center" v-else>
-      No se encontraron los paises
-    </div>
-  </div>
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue';
 import { useQuery } from '@vue/apollo-composable';
 
 const GET_COUNTRIES = gql`
   query GetCountries {
     countries {
-      code
       name
       continent {
         name
@@ -35,7 +24,7 @@ const GET_COUNTRIES = gql`
 `;
 
 interface Country {
-  code: string;
+  cod: string;
   name: string;
   continent: {
     name: string;
@@ -56,10 +45,5 @@ if (result.value && result.value.countries) {
 
 const searchTerm = ref('');
 
-// Filtramos los países basados en el término de búsqueda
-const filteredCountries = computed(() => {
-  return countries.value.filter(country =>
-    country.name.toLowerCase().includes(searchTerm.value.toLowerCase())
-  );
-});
+
 </script>
