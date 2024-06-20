@@ -1,26 +1,26 @@
 <template>
     <div class="flex flex-wrap justify-around p-4">
-        <div class="flex justify-center w-full sm:w-3/5">
-            <img class="w-full" v-if="image" :src="image.largeImageURL" />
-            <div v-else>
-                No image found
-            </div>
-        </div>
-        <div class="flex flex-col justify-center items-center p-4 gap-4">
-            <div class="flex flex-col items-center gap-4">
-            <h1>{{ country?.name }}</h1>
+        <div class="flex flex-col items-center justify-center w-full sm:w-3/6">
+            <h1 class="text-3xl">{{ country?.name }}</h1>
             <p>{{ country?.continent?.name }}</p>
-        </div>
-        <div class="flex flex-col gap-4">
-            <p>Capital: {{ country?.capital }}</p>
-            <p>Moneda: {{ country?.currency }}</p>
-            <div v-if="country?.states.length">
-                <p>Estados</p><br>
-                <Listbox v-model="selectedState" :options="country.states" optionLabel="name" class="w-full md:w-[14rem]" listStyle="max-height:250px"/>
+            <img class="w-full p-0 my-5 lg:p-8 lg:m-0" v-if="image" :src="image.largeImageURL" style="height: 500px; object-fit: cover;">
+            <div v-else>
+                No se encontro la imagen
             </div>
+        </div>
+        <div class="flex flex-col justify-center items-center p-0 gap-4 w-full sm:w-1/2 sm:p-4 xl:w-5/12">
+        <div class="flex flex-col items-start gap-4 p-4 bg-black text-white w-full sm:flex-row sm:items-end ">
+            <div class="flex flex-col gap-4 w-full">
+            <p class="font-bold">Capital:</p><p> {{ country?.capital }}</p>
+            <p class="font-bold">Moneda:</p><p>{{ country?.currency }}</p>
             <div v-if="country?.languages.length">
-                <p>Idiomas</p><br>
-                <Listbox v-model="selectedState" :options="country.languages" optionLabel="name" class="w-full md:w-[14rem]" listStyle="max-height:250px"/>
+                <p class="font-bold">Idiomas</p><br>
+                <Listbox v-model="selectedState" :options="country.languages" optionLabel="name" class="w-full" listStyle="max-height:250px"/>
+            </div>
+            </div>
+            <div class="w-full"v-if="country?.states.length">
+                <p class="font-bold">Estados</p><br>
+                <Listbox v-model="selectedState" :options="country.states" optionLabel="name" class="w-full" listStyle="max-height:250px"/>
             </div>
         </div>
     </div>
@@ -80,8 +80,6 @@ const { result, onResult } = useQuery(GET_COUNTRY_DETAILS, {
 onResult((queryResult) => {
     if (queryResult.data && queryResult.data.countries.length > 0) {
         country.value = queryResult.data.countries[0];
-    } else {
-        console.error('No country data found');
     }
 });
 

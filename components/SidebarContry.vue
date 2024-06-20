@@ -1,5 +1,5 @@
 <template>
-    <div class="card flex flex-column">
+    <div class="card flex flex-column bg-black p-4">
         <Sidebar v-model:visible="visible">
             <template #container="{ closeCallback }">
                 <div class="flex flex-col h-full">
@@ -15,7 +15,7 @@
                                     class="fill-surface-700 dark:fill-surface-200"
                                 />
                             </svg>
-                            <span class="font-semibold text-2xl text-primary">FractalUP</span>
+                            <span class="font-semibold text-2xl text-primary flex justify-column items-center gap-4"><img src="/public/fractalup_logo.jpg" alt="" class="w-1/5">FractalUP</span>
                         </span>
                         <span>
                             <Button type="button" @click="closeCallback" icon="pi pi-times" rounded outlined class="h-8 w-8"></Button>
