@@ -70,4 +70,8 @@ onMounted(async () => {
 #link_card .p-component {
     height: 100%;
 }
+#card:hover{
+    background: #3679e4;
+    color: white;
+}
 </style>
