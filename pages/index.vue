@@ -1,26 +1,38 @@
 <template>
   <div class="flex justify-center">
-<IconField class="w-3/5 shadow-md">
+    <IconField class="w-3/5 shadow-md">
       <InputIcon>
         <i class="pi pi-search" />
       </InputIcon>
-      <InputText v-model="searchTerm" placeholder="Busca un pais" class="w-full shadow-none"/>
+      <InputText v-model="searchTerm" placeholder="Busca un país" class="w-full shadow-none" />
+      <ul v-if="showDropdown" class="absolute z-10 mt-1 bg-white border border-gray-300 w-full rounded-md shadow-lg">
+        <div class="flex flex-row items-center gap-4"><p class="p-4">Filtrar por continente</p>
+          <button @click="showDropdown=false"><i class="pi pi-check hover:text-green-500"></i></button><button @click="uncheckAll" class="hover:text-blue-500">Limpiar</button></div>
+        <li v-for="continent in continents" :key="continent.code">
+          <label class="inline-flex items-center cursor-pointer w-full px-4">
+            <input type="checkbox" :value="continent" v-model="selectedContinents">
+            <span class="ml-2">{{ continent.name }}</span>
+          </label>
+        </li>
+      </ul>
     </IconField>
+    <Button @click="toggleDropdown">Filtrar</Button> 
   </div>
-  <div class="p-4 flex ">
+  <div class="p-4 flex" id="countriesView">
     <div class="flex flex-wrap justify-center" v-if="filteredCountries.length > 0">
-      <CardCountry v-for="country in filteredCountries" :key="country.code" :continent="country.continent.name"
-        :name="country.name"/>
+      <CardCountry v-for="country in filteredCountries" :key="country.code" :continent="country.continent.name" :name="country.name" />
     </div>
     <div class="flex flex-wrap justify-center" v-else>
-      No se encontraron los paises
+      No se encontraron países
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 import { useQuery } from '@vue/apollo-composable';
+import CardCountry from '~/components/CardCountry.vue';
+import { gql } from 'graphql-tag';
 
 const GET_COUNTRIES = gql`
   query GetCountries {
@@ -34,6 +46,15 @@ const GET_COUNTRIES = gql`
   }
 `;
 
+const GET_CONTINENTS = gql`
+  query GetContinents {
+    continents {
+      name
+      code
+    }
+  }
+`;
+
 interface Country {
   code: string;
   name: string;
@@ -42,24 +63,50 @@ interface Country {
   };
 }
 
+interface Continent {
+  name: string;
+  code: string;
+}
+
 interface CountriesResult {
   countries: Country[];
 }
 
-const { result } = useQuery<CountriesResult>(GET_COUNTRIES);
-const countries = ref<Country[]>([]);
-
-// Obtenemos la lista de países cuando la consulta está lista
-if (result.value && result.value.countries) {
-  countries.value = result.value.countries;
+interface ContinentsResult {
+  continents: Continent[];
 }
 
+const { result: countryResult } = useQuery<CountriesResult>(GET_COUNTRIES);
+const { result: continentResult } = useQuery<ContinentsResult>(GET_CONTINENTS);
+
+const countries = ref<Country[]>([]);
+const continents = ref<Continent[]>([]);
+const showDropdown = ref(false);
+const selectedContinents = ref<Continent[]>([]); // Utilizar un array para manejar múltiples selecciones
 const searchTerm = ref('');
 
-// Filtramos los países basados en el término de búsqueda
-const filteredCountries = computed(() => {
-  return countries.value.filter(country =>
-    country.name.toLowerCase().includes(searchTerm.value.toLowerCase())
-  );
+onMounted(() => {
+  if (countryResult.value && countryResult.value.countries) {
+    countries.value = countryResult.value.countries;
+  }
+  if (continentResult.value && continentResult.value.continents) {
+    continents.value = continentResult.value.continents;
+  }
 });
+
+const filteredCountries = computed(() => {
+  return countries.value.filter(country => {
+    const matchesSearch = country.name.toLowerCase().includes(searchTerm.value.toLowerCase());
+    const matchesContinent = selectedContinents.value.length === 0 || selectedContinents.value.some(c => c.name === country.continent.name);
+    return matchesSearch && matchesContinent;
+  });
+});
+
+const toggleDropdown = () => {
+  showDropdown.value = !showDropdown.value;
+};
+
+const uncheckAll = () => {
+  selectedContinents.value = [];
+};
 </script>

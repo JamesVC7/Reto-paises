@@ -1,5 +1,5 @@
 <template>
-<div>HELLO</div>
+<div class="grid justify-center items-center" >HELLO</div>
 </template>
 
 <script setup lang="ts"></script>

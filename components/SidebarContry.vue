@@ -1,4 +1,3 @@
-
 <template>
     <div class="card flex flex-column">
         <Sidebar v-model:visible="visible">
